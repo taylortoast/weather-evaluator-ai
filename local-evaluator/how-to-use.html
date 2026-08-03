@@ -21,96 +21,81 @@
 </head>
 <body>
   <main class="app-shell guide">
-    <a class="back-link" href="index.html">← Back to evaluator</a>
+    <a class="back-link" href="index.html">&larr; Back to evaluator</a>
     <header class="hero">
       <div>
         <p class="eyebrow">333 TRS Weather AI</p>
         <h1>How to use the local evaluator</h1>
-        <p class="intro">This guide covers the complete instructor workflow from starting the local services through reviewing AI-generated feedback.</p>
+        <p class="intro">This guide covers the instructor workflow from starting the local services through reviewing one result per student submission.</p>
       </div>
     </header>
 
     <section class="panel guide-section">
       <h2>1. Start the local services</h2>
-      <p>Start LM Studio first. Load the configured model and start its local server on port <code>1234</code>.</p>
+      <p>Start LM Studio first. Load <code>google/gemma-3-4b</code> and start its local server on port <code>1234</code>.</p>
       <p>Then start the local agent from a separate PowerShell window:</p>
       <pre><code>cd "C:\Users\Admin\Documents\Web\333 TRS Weather AI"
-$env:LM_STUDIO_API_TOKEN = "your-saved-token"
+$env:LM_STUDIO_API_TOKEN = "your-local-token"
 $env:LM_STUDIO_BASE_URL = "http://127.0.0.1:1234"
 $env:LM_STUDIO_MODEL = "google/gemma-3-4b"
 node .\local-agent\server.js</code></pre>
-      <p>Leave this terminal open while using the evaluator. Check <code>http://127.0.0.1:8787/health</code>. A healthy response reports <code>"ok": true</code> and <code>"curriculumPages": 235</code>.</p>
+      <p>Check <code>http://localhost:8787/health</code>. A healthy response reports <code>"ok": true</code> and a course reference count.</p>
+      <p>Start the evaluator UI from another PowerShell window:</p>
+      <pre><code>cd "C:\Users\Admin\Documents\Web\333 TRS Weather AI\local-evaluator"
+.\start-server.ps1</code></pre>
+      <p>Open <code>http://localhost:5500/</code> on the host PC. From another PC on the same LAN, open <code>http://HOST-PC-IP:5500/</code>.</p>
       <div class="warning">Do not place the LM Studio token in this website, in <code>app.js</code>, or in a committed configuration file.</div>
     </section>
 
     <section class="panel guide-section">
       <h2>2. Upload student workbooks</h2>
       <ol>
-        <li>Open the evaluator page.</li>
         <li>Drag one or more Excel workbooks into the upload area, or choose them from your computer.</li>
-        <li>Review the status card for every workbook.</li>
-        <li>Only valid workbooks are included in the evaluation request.</li>
+        <li>Review the status for every workbook.</li>
+        <li>Each valid workbook is treated as one student submission.</li>
       </ol>
       <p>The evaluator recognizes:</p>
       <ul>
         <li><strong>Mission Forecaster:</strong> <code>MEF Forecast Reasoning</code></li>
         <li><strong>Station Forecaster:</strong> <code>TAF Forecast Reasoning</code></li>
       </ul>
-      <p>Keep different lesson scopes in separate batches. For example, evaluate Mission Forecaster workbooks separately from Station Forecaster workbooks.</p>
     </section>
 
     <section class="panel guide-section">
       <h2>3. Set the evaluation scope</h2>
-      <p>Scope tells the agent what course material is relevant. Fill in at least the block, lesson, and objective when known.</p>
-      <h3>Example Mission Forecaster scope</h3>
-      <ul>
-        <li><strong>Course:</strong> 333 TRS Weather</li>
-        <li><strong>Block:</strong> Block II</li>
-        <li><strong>Lesson:</strong> Mission Execution Forecast (MEF)</li>
-        <li><strong>Objective:</strong> Evaluate forecast reasoning and mission-weather impacts.</li>
-      </ul>
-      <h3>Approved course context</h3>
-      <p>Leave this blank for normal use. The local agent already searches the staged curriculum. Paste a targeted, instructor-approved excerpt here only when the evaluation must be restricted to that material.</p>
-      <h3>Evaluation instructions</h3>
-      <p>The default instructions are suitable for the first test. Change them only when the instructor wants a specific evaluation emphasis.</p>
-      <h3>Rubric</h3>
-      <p>Add the scoring criteria or checklist when a formal rubric exists. Without one, the agent provides a concept-based review instead of a formal score.</p>
+      <p>Section 02 lists objectives from <code>local-agent/course/course-reference.md</code>. Select the objectives that apply to the uploaded submissions.</p>
+      <p>The UI groups objectives by unit. There are no course, block, lesson, instruction, rubric, or extracted-data fields to complete.</p>
+      <p>The selected objectives are sent to the local agent. The agent retrieves only the matching course-reference sections and uses those sections as the evaluation context.</p>
     </section>
 
     <section class="panel guide-section">
       <h2>4. Evaluate the work</h2>
       <ol>
-        <li>Confirm that the agent endpoint is <code>http://127.0.0.1:8787/api/evaluate</code>.</li>
+        <li>Confirm the agent endpoint is filled in. On a LAN PC it should use the host PC address.</li>
         <li>Click <strong>Evaluate work</strong>.</li>
-        <li>Wait for the local agent to retrieve curriculum context and call LM Studio.</li>
-        <li>Review the evaluation summary, answer classifications, confidence, references, and student feedback.</li>
+        <li>Wait while the app evaluates each workbook as a separate submission.</li>
+        <li>Review each result box independently.</li>
       </ol>
-      <p>The agent classifies individual answers as <code>Correct</code>, <code>Partially correct</code>, <code>Incorrect</code>, <code>Missing</code>, or <code>Unclear</code>.</p>
+      <p>Each result box has its own <strong>Copy</strong> button.</p>
     </section>
 
     <section class="panel guide-section">
-      <h2>5. Review before sending feedback</h2>
-      <p>The AI output is a draft for instructor review. Check:</p>
-      <ul>
-        <li>Whether the cited curriculum sections actually support the finding.</li>
-        <li>Whether “If Applicable” fields were relevant to the student’s assignment.</li>
-        <li>Whether the confidence level is appropriate.</li>
-        <li>Whether the feedback explains the missing reasoning without adding unsupported requirements.</li>
-        <li>Whether the feedback is appropriate to send to the student.</li>
-      </ul>
-      <p>Low-confidence or insufficient-context results should not be sent without instructor review.</p>
+      <h2>5. Review the results</h2>
+      <p>Correct answers are shown only as a count.</p>
+      <p>Incorrect, partially correct, missing, and unclear answers include the objective, evaluated answer text, and citation back to the source PDF.</p>
+      <p>The AI output is still an instructor-review draft. Confirm the cited course reference supports the finding before sending feedback to a student.</p>
     </section>
 
     <section class="panel guide-section">
-      <h2>6. Export and troubleshoot</h2>
-      <h3>Extracted JSON</h3>
-      <p>Use <strong>Copy JSON</strong> or <strong>Download JSON</strong> to preserve the deterministic workbook extraction independently of the AI response.</p>
-      <h3>“Failed to fetch”</h3>
-      <p>Confirm the local agent terminal is still running and check <code>http://127.0.0.1:8787/health</code>.</p>
-      <h3>HTTP 502</h3>
-      <p>LM Studio responded, but the agent could not complete or validate the model response. Restart the agent after code changes and review the terminal output.</p>
-      <h3>LM Studio errors</h3>
-      <p>Confirm the model is loaded, the LM Studio server is running on port <code>1234</code>, and the token environment variable was set in the same terminal used to start the agent.</p>
+      <h2>6. Troubleshoot</h2>
+      <h3>LAN PC cannot connect</h3>
+      <p>Use the host PC's LAN IP address and allow Node.js through Windows Firewall for Private networks.</p>
+      <h3>Failed to fetch</h3>
+      <p>Confirm the local agent is still running and check <code>http://localhost:8787/health</code> on the host PC.</p>
+      <h3>HTTP 502 or model error</h3>
+      <p>Confirm LM Studio is running, the model is loaded, and the local server is listening on port <code>1234</code>.</p>
+      <h3>Context-size error</h3>
+      <p>Reduce the number of selected objectives and evaluate again. The app already sends capped objective context, but very broad selections can still be too much for a small local model.</p>
     </section>
   </main>
 </body>

@@ -1,22 +1,59 @@
 # 333 TRS Local Evaluator
 
-Browser-only prototype for extracting student answers from Mission Forecaster and Station Forecaster Excel workbooks.
+Browser UI for extracting student answers from Mission Forecaster and Station Forecaster Excel workbooks, selecting course objectives, and reviewing one local AI evaluation per student submission.
 
-## Run locally
+## Start
 
-Open `index.html` in a browser. The workbook parser and all site assets are local; no internet connection or web server is required for extraction.
+From this directory:
 
-For local AI evaluation, run an OpenAI-compatible agent and enter its chat-completions URL in the page. The default URL is:
-
-```text
-http://localhost:11434/v1/chat/completions
+```powershell
+.\start-server.ps1
 ```
 
-The browser sends extracted submissions, course scope, approved context, instructions, and rubric in one request. If the agent is unavailable, extracted data remains available for instructor review.
+Open on the host PC:
 
-## Supported workbook types
+```text
+http://localhost:5500/
+```
+
+Open from another PC on the same LAN:
+
+```text
+http://HOST-PC-IP:5500/
+```
+
+The UI server binds to `0.0.0.0` by default. If Windows blocks access, allow Node.js through the firewall for Private networks.
+
+## Agent Endpoint
+
+The page auto-fills the endpoint based on how it was opened:
+
+- host PC: `http://127.0.0.1:8787/api/evaluate`
+- LAN PC: `http://HOST-PC-IP:8787/api/evaluate`
+
+Run the local agent on the host PC before evaluating work.
+
+## Workflow
+
+1. Upload one or more `.xlsx` or `.xls` workbooks.
+2. Select one or more objectives in Section 02.
+3. Click `Evaluate work`.
+4. Review one result box per workbook.
+5. Use the result box `Copy` button if the instructor wants to preserve or share the result.
+
+Correct answers are shown only as a count. Non-correct answers include the objective, evaluated answer, and PDF citation.
+
+## Supported Workbook Types
 
 - Mission Forecaster: `MEF Forecast Reasoning`
 - Station Forecaster: `TAF Forecast Reasoning`
 
-The original prototype in `../site` is preserved unchanged.
+## Course Reference
+
+The objective picker loads:
+
+```text
+../local-agent/course/course-reference.md
+```
+
+The local agent uses the same file for retrieval, so the UI and evaluation context stay aligned.

@@ -1,0 +1,22 @@
+# Local prototypes and generated work
+site/
+outputs/
+docx_render_check/
+docx_render_check_v2/
+work_spreadsheets/
+
+# Local source documents and student submissions
+*.docx
+*.pdf
+*.xlsx
+*.xls
+
+# Local secrets and environment
+.env
+*.local
+
+# Node/editor noise
+node_modules/
+.vscode/
+.DS_Store
+Thumbs.db

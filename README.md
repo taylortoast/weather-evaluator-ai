@@ -1,43 +1,60 @@
 # 333 TRS Weather AI
 
-Local tools for extracting and evaluating weather-forecasting student workbooks.
+Local tools for extracting and evaluating 333 TRS Weather student workbook submissions.
 
-## Included components
+## Components
 
-- [`local-evaluator`](local-evaluator/): browser-only workbook extraction and instructor review interface.
-- [`local-agent`](local-agent/): local evaluation service that retrieves approved curriculum context and sends evaluation requests to an OpenAI-compatible LM Studio endpoint.
+- `local-evaluator/`: browser UI for uploading Excel workbooks, selecting course objectives, and reviewing one evaluation result per student submission.
+- `local-agent/`: Node.js service that retrieves course-reference context and calls an OpenAI-compatible LM Studio endpoint.
 
-## Workflow
+## Quick Start
 
-1. Open `local-evaluator/index.html` in a browser.
-2. Select Mission Forecaster or Station Forecaster Excel workbooks.
-3. Review or download the extracted submission JSON.
-4. Optionally enter a local agent URL and request an evaluation.
-5. Review the returned classification, rubric findings, missing concepts, and instructor-review flag.
+Start LM Studio first, load `google/gemma-3-4b`, and enable its local server on port `1234`.
 
-## Start the local agent
-
-From the project directory, configure the local model connection and start the service:
+Start the local agent:
 
 ```powershell
+cd "C:\Users\Admin\Documents\Web\333 TRS Weather AI"
 $env:LM_STUDIO_API_TOKEN = "your-local-token"
 $env:LM_STUDIO_BASE_URL = "http://127.0.0.1:1234"
 $env:LM_STUDIO_MODEL = "google/gemma-3-4b"
 node .\local-agent\server.js
 ```
 
-The service listens at `http://127.0.0.1:8787`.
+Start the evaluator UI:
 
-- Health check: `http://127.0.0.1:8787/health`
-- Evaluation endpoint: `http://127.0.0.1:8787/api/evaluate`
+```powershell
+cd "C:\Users\Admin\Documents\Web\333 TRS Weather AI\local-evaluator"
+.\start-server.ps1
+```
 
-## Evaluation boundaries
+Open `http://localhost:5500/` on the host PC. From another PC on the same LAN, open `http://HOST-PC-IP:5500/`.
 
-The agent evaluates only against the instructor-provided scope, approved context, rubric, evaluation instructions, and locally stored course curriculum. Ambiguous, low-confidence, conflicting, or insufficiently supported results are marked for instructor review.
+## Workflow
 
-## Supported workbooks
+1. Upload one or more Mission Forecaster or Station Forecaster Excel workbooks.
+2. Select the applicable course objectives in Section 02.
+3. Click `Evaluate work`.
+4. Review each student submission in its own result box.
+5. Use each result box's `Copy` button when ready.
+
+Correct answers are returned only as a count. Non-correct answers list the objective, evaluated answer text, and PDF citation.
+
+## Course Reference
+
+Both the UI objective picker and local agent retrieval use one reference file:
+
+```text
+local-agent/course/course-reference.md
+```
+
+That file contains objective sections and citations back to `Complete_Curriculum_Text.pdf`.
+
+## Supported Workbooks
 
 - Mission Forecaster: `MEF Forecast Reasoning`
 - Station Forecaster: `TAF Forecast Reasoning`
 
-All included runtime assets are local. No external web server is required to extract workbook data.
+## LAN Notes
+
+The UI and agent bind to `0.0.0.0` for LAN access. If another PC cannot connect, allow Node.js through Windows Firewall for Private networks.

@@ -1,24 +1,56 @@
-# Local evaluation agent
+# Local Evaluation Agent
 
-This service keeps the agent rules and curriculum retrieval local, then calls the LM Studio OpenAI-compatible API.
+Node.js service that retrieves selected course objective context from `course/course-reference.md`, calls LM Studio, validates the model response, and returns instructor-review text to the evaluator UI.
 
-## Manual startup
+## Start
 
-PowerShell:
+From the project root:
 
 ```powershell
 $env:LM_STUDIO_API_TOKEN = "your-local-token"
 $env:LM_STUDIO_BASE_URL = "http://127.0.0.1:1234"
 $env:LM_STUDIO_MODEL = "google/gemma-3-4b"
+$env:LOCAL_AGENT_HOST = "0.0.0.0"
 node .\local-agent\server.js
 ```
-
-The agent listens at `http://127.0.0.1:8787`.
 
 Health check:
 
 ```text
-http://127.0.0.1:8787/health
+http://localhost:8787/health
 ```
 
-The curriculum text was extracted from the project PDF into `course/curriculum.txt`. The original PDF remains unchanged.
+Expected response includes:
+
+```json
+{
+  "ok": true,
+  "model": "google/gemma-3-4b",
+  "curriculumPages": 20
+}
+```
+
+## Evaluation Contract
+
+The UI sends each student document as a separate evaluation request with:
+
+- selected objective labels
+- extracted workbook answers
+- fixed evaluation instructions
+
+The agent retrieves matching sections from `course/course-reference.md`. It does not use `curriculum.txt`, `objective-notes.md`, or a second reference source.
+
+Returned output:
+
+- correct answers: count only
+- incorrect, partially correct, missing, or unclear answers: objective, evaluated answer text, and PDF citation
+
+## Configuration
+
+- `LOCAL_AGENT_PORT`: defaults to `8787`
+- `LOCAL_AGENT_HOST`: defaults to `0.0.0.0`
+- `LM_STUDIO_BASE_URL`: defaults to `http://127.0.0.1:1234`
+- `LM_STUDIO_MODEL`: defaults to `google/gemma-3-4b`
+- `LM_STUDIO_API_TOKEN`: optional local token
+
+Keep tokens in the shell environment. Do not commit them.

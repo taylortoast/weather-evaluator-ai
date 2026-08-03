@@ -3,5 +3,5 @@
   "reviewTriggers": ["low confidence", "insufficient context", "ambiguous answer", "conflicting evidence"],
   "confidenceValues": ["high", "medium", "low"],
   "temperature": 0,
-  "maxOutputTokens": 2500
+  "maxOutputTokens": 4000
 }

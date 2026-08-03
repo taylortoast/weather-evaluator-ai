@@ -12,10 +12,10 @@
       <div>
         <p class="eyebrow">333 TRS Weather AI</p>
         <h1>Local student-work evaluator</h1>
-        <p class="intro">Upload forecaster workbooks, review the extracted answers, and send a scoped evaluation request to a local AI agent.</p>
-        <p><a href="how-to-use.html">Read the detailed how-to guide →</a></p>
+        <p class="intro">Upload forecaster workbooks, select the course objectives to evaluate against, and send each student submission to a local AI agent.</p>
+        <p><a href="how-to-use.html">Read the detailed how-to guide -></a></p>
       </div>
-      <span class="local-badge">Browser-only • local files</span>
+      <span class="local-badge">Browser-only - local files</span>
     </header>
 
     <section class="panel" aria-labelledby="uploadHeading">
@@ -45,16 +45,14 @@
         </div>
         <span class="muted">Instructor-controlled context</span>
       </div>
-      <div class="field-grid">
-        <label>Course<input id="course" type="text" placeholder="333 TRS Weather" value="333 TRS Weather"></label>
-        <label>Block<input id="block" type="text" placeholder="Block or phase"></label>
-        <label>Lesson<input id="lesson" type="text" placeholder="Lesson identifier"></label>
-        <label>Objective<input id="objective" type="text" placeholder="Learning objective"></label>
-      </div>
       <div class="field-stack">
-        <label>Approved course context<textarea id="courseContext" rows="5" placeholder="Paste only the approved course material the local agent may use."></textarea></label>
-        <label>Evaluation instructions<textarea id="instructions" rows="4" placeholder="Tell the evaluator how to interpret and explain the work.">Evaluate only against the supplied course context and rubric. Identify missing concepts, explain the reasoning clearly, and flag uncertain or insufficient-context results for instructor review.</textarea></label>
-        <label>Rubric<textarea id="rubric" rows="4" placeholder="Paste the scoring criteria or review checklist."></textarea></label>
+        <div>
+          <div class="label-row">
+            <span>Objectives</span>
+            <small id="objectiveStatus">Loading objective notes...</small>
+          </div>
+          <div id="objectiveList" class="objective-list" aria-live="polite"></div>
+        </div>
       </div>
     </section>
 
@@ -70,24 +68,8 @@
         <label class="endpoint-field">Local agent endpoint<input id="endpoint" type="url" value="http://127.0.0.1:8787/api/evaluate" placeholder="http://127.0.0.1:8787/api/evaluate"></label>
         <button id="evaluateButton" class="primary" type="button" disabled>Evaluate work</button>
       </div>
-      <p id="evaluationStatus" class="status" role="status">Upload at least one valid workbook to enable evaluation.</p>
-      <div id="evaluationOutput" class="evaluation-output" hidden></div>
-    </section>
-
-    <section class="panel output-panel" aria-labelledby="jsonHeading">
-      <div class="panel-heading">
-        <div>
-          <p class="step">04</p>
-          <h2 id="jsonHeading">Extracted submission data</h2>
-        </div>
-        <div class="actions">
-          <button id="copyButton" type="button" disabled>Copy JSON</button>
-          <button id="downloadButton" type="button" disabled>Download JSON</button>
-        </div>
-      </div>
-      <pre id="jsonOutput">{
-  "submissions": {}
-}</pre>
+      <p id="evaluationStatus" class="status" role="status">Upload at least one valid workbook and select at least one objective to enable evaluation.</p>
+      <div id="evaluationOutput" class="evaluation-grid" hidden></div>
     </section>
   </main>
   <script src="xlsx.full.min.js"></script>
