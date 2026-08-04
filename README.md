@@ -2,6 +2,13 @@
 
 Local tools for extracting and evaluating 333 TRS Weather student workbook submissions.
 
+## Prerequisites
+
+- Node.js 18 or newer for the local agent and evaluator web server.
+- Windows PowerShell to run the included startup script.
+- A modern browser such as Edge, Chrome, or Firefox.
+- LM Studio, or another local OpenAI-compatible chat-completions server, running an instruction-following LLM. The default setup expects LM Studio at `http://127.0.0.1:1234` with the `google/gemma-3-4b` model loaded.
+
 ## Components
 
 - `local-evaluator/`: browser UI for uploading Excel workbooks, selecting course objectives, and reviewing one evaluation result per student submission.
