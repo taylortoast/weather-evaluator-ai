@@ -1,4 +1,4 @@
-const COURSE = "333 TRS Weather";
+const COURSE = "335 TRS Weather";
 const EVALUATION_INSTRUCTIONS = "Evaluate only against the selected objective content. Identify missing concepts, explain the reasoning clearly, and flag uncertain or insufficient-context results for instructor review.";
 const COURSE_REFERENCE_URL = "/course/course-reference.md";
 const WORKBOOK_TYPES = [
