@@ -38,7 +38,7 @@ Open `http://localhost:5500/` on the host PC. From another PC on the same LAN, o
 4. Review each student submission in its own result box.
 5. Use each result box's `Copy` button when ready.
 
-Correct answers are returned only as a count. Non-correct answers list the objective, evaluated answer text, and PDF citation.
+Correct answers are returned only as a count. Partially correct and incorrect answers list the objective, evaluated answer text, evaluation narrative, and PDF citation. Missing and unclear answers omit the evaluation narrative.
 
 ## Course Reference
 

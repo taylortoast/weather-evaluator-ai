@@ -116,6 +116,7 @@ function buildUserPrompt(request, context) {
     `Rubric: ${request.rubric || "None supplied."}`,
     `The submission contains ${prompts.length} answer items. Return exactly ${prompts.length} fieldEvaluations entries, one per answer, in this exact order: ${JSON.stringify(prompts)}.`,
     "Do not combine answers. Each fieldEvaluations entry must contain objective, prompt, status, summary, and citation.",
+    "For Partially correct and Incorrect answers, summary must be a concise narrative explaining why the answer received that status. For Correct, Missing, and Unclear answers, keep summary empty.",
     `Selected objectives: ${JSON.stringify(objectives)}.`,
     "The objective field must include the objective code and title most directly used to evaluate that answer, for example: 5D - Terminal Aerodrome Forecast (TAF).",
     "The prompt field must repeat the exact evaluated answer prompt from the ordered list.",
@@ -145,6 +146,7 @@ function normalizeEvaluation(value, prompts = [], objectives = []) {
       objective: item.objective || item.objectiveTitle || objectives[0] || "",
       prompt: item.prompt || item.field || prompts[index] || "",
       status: normalizeStatus(item.status || item.evaluation),
+      summary: String(item.summary || item.feedback || item.reason || item.explanation || "").trim(),
       citation: citationText(item.citation || item.sourceReference || item.sourceReferences || item.references)
     }))
     : value.fieldEvaluations;
@@ -170,22 +172,30 @@ function validateEvaluation(value, expectedItems) {
   if (value.fieldEvaluations.length !== expectedItems) throw new Error(`Evaluation returned ${value.fieldEvaluations.length} items; expected ${expectedItems}.`);
   const invalidStatus = value.fieldEvaluations.find(item => item.status && !rules.allowedStatuses.includes(item.status));
   if (invalidStatus) throw new Error(`Invalid answer status: ${invalidStatus.status}.`);
+  const missingNarrative = value.fieldEvaluations.find(item => ["Partially correct", "Incorrect"].includes(item.status) && !item.summary);
+  if (missingNarrative) throw new Error(`Evaluation narrative is missing for ${missingNarrative.status} answer.`);
   return value;
 }
 
 function formatEvaluation(evaluation) {
   const evaluations = evaluation.fieldEvaluations;
   const correctCount = evaluations.filter(item => item.status === "Correct").length;
-  const linesFor = status => evaluations.filter(item => item.status === status).map(item => [
-    `- Objective: ${item.objective || "Objective not provided."}`,
-    `- Answer: ${item.prompt || "Unlabeled answer"}`,
-    `  Citation: ${item.citation || "Citation not provided."}`
-  ].join("\n"));
+  const linesFor = item => {
+    const lines = [
+      `- Objective: ${item.objective || "Objective not provided."}`,
+      `- Answer: ${item.prompt || "Unlabeled answer"}`
+    ];
+    if (["Partially correct", "Incorrect"].includes(item.status)) {
+      lines.push(`- Evaluation: ${item.status}. ${item.summary}`);
+    }
+    lines.push(`- Citation: ${item.citation || "Citation not provided."}`);
+    return lines.join("\n");
+  };
+  const nonCorrect = evaluations
+    .filter(item => item.status !== "Correct")
+    .map(linesFor);
   const lines = [`Correct: ${correctCount}`];
-  for (const status of ["Incorrect", "Partially correct", "Missing", "Unclear"]) {
-    const entries = linesFor(status);
-    lines.push("", status, ...(entries.length ? entries : ["- None."]));
-  }
+  if (nonCorrect.length) lines.push("", ...nonCorrect);
   return lines.join("\n");
 }
 

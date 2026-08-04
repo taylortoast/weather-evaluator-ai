@@ -41,7 +41,7 @@ Run the local agent on the host PC before evaluating work.
 4. Review one result box per workbook.
 5. Use the result box `Copy` button if the instructor wants to preserve or share the result.
 
-Correct answers are shown only as a count. Non-correct answers include the objective, evaluated answer, and PDF citation.
+Correct answers are shown only as a count. Partially correct and incorrect answers include the objective, evaluated answer, evaluation narrative, and PDF citation. Missing and unclear answers omit the evaluation narrative.
 
 ## Supported Workbook Types
 

@@ -43,7 +43,8 @@ The agent retrieves matching sections from `course/course-reference.md`. It does
 Returned output:
 
 - correct answers: count only
-- incorrect, partially correct, missing, or unclear answers: objective, evaluated answer text, and PDF citation
+- partially correct and incorrect answers: objective, evaluated answer text, evaluation narrative, and PDF citation
+- missing and unclear answers: objective, evaluated answer text, and PDF citation
 
 ## Configuration
 
