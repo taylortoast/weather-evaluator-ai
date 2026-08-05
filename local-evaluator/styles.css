@@ -66,15 +66,15 @@ h2 { margin-bottom: 0; font-size: 1.2rem; }
 .objective-option[aria-pressed="true"] { border-color: var(--success); background: #173629; color: #edf4fb; }
 .agent-row { display: grid; grid-template-columns: minmax(0, 1fr) 180px; align-items: end; gap: 14px; padding: 20px; }
 .primary { min-height: 45px; }
-.panel[aria-labelledby="agentHeading"] { overflow-y: auto; }
+.panel[aria-labelledby="agentHeading"] { overflow: hidden; }
 .panel[aria-labelledby="agentHeading"] .evaluation-grid { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
-.evaluation-grid { display: grid; gap: 12px; margin: 0 20px 20px; }
-.evaluation-card { border: 1px solid #315473; border-radius: 10px; background: #0c1823; overflow: hidden; }
+.evaluation-grid { display: grid; align-content: start; gap: 12px; margin: 0 20px 20px; padding-right: 4px; }
+.evaluation-card { display: grid; grid-template-rows: auto minmax(0, 1fr); height: 228px; min-height: 0; border: 1px solid #315473; border-radius: 10px; background: #0c1823; overflow: hidden; }
 .result-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #315473; }
 .result-heading h3 { margin: 0; font-size: 1rem; overflow-wrap: anywhere; }
 .result-actions { display: flex; align-items: center; gap: 8px; }
 .result-actions button { padding: 6px 9px; border-radius: 7px; font-size: .78rem; }
-.evaluation-card pre { min-height: 120px; max-height: 38vh; padding: 16px; color: #d9ebff; }
+.evaluation-card pre { min-height: 0; max-height: none; padding: 16px; color: #d9ebff; }
 .output-panel { margin-top: 18px; }
 .actions { display: flex; gap: 8px; }
 pre { margin: 0; min-height: 220px; max-height: 50vh; overflow: auto; padding: 20px; color: #c8e1ff; font: 13px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }

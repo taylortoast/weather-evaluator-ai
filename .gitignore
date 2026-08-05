@@ -10,8 +10,6 @@ work_spreadsheets/
 *.pdf
 *.xlsx
 *.xls
-!docs/
-!docs/*.xlsx
 
 # Local secrets and environment
 .env

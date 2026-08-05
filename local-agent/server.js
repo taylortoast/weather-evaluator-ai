@@ -223,26 +223,38 @@ async function callLmStudio(request, context) {
 }
 
 async function handleEvaluate(request, response, origin) {
-  if (!request || !request.submissions || !Object.keys(request.submissions).length) return sendJson(response, 400, { error: "At least one submission is required." }, origin);
+  const startedAt = Date.now();
+  if (!request || !request.submissions || !Object.keys(request.submissions).length) {
+    console.warn("[Evaluation] Rejected: at least one submission is required.");
+    return sendJson(response, 400, { error: "At least one submission is required." }, origin);
+  }
   const expectedItems = answerCount(request.submissions);
   const prompts = answerPrompts(request.submissions);
   const objectives = Array.isArray(request.scope?.objectives) ? request.scope.objectives : [];
   const context = retrieveContext(request);
+  console.log(`[Evaluation] Started: ${expectedItems} answer${expectedItems === 1 ? "" : "s"}.`);
   try {
+    console.log("[Evaluation] Sending request to LM Studio...");
     const evaluation = validateEvaluation(normalizeEvaluation(await callLmStudio(request, context), prompts, objectives), expectedItems);
+    console.log(`[Evaluation] Completed in ${Date.now() - startedAt} ms.`);
     sendText(response, 200, formatEvaluation(evaluation), origin);
   } catch (error) {
+    console.error(`[Evaluation] Failed after ${Date.now() - startedAt} ms: ${error.message}`);
     sendJson(response, 502, { error: error.message, needsInstructorReview: true, evaluationSummary: "Automatic evaluation could not be completed.", studentFeedback: "Instructor review is required." }, origin);
   }
 }
 
 const server = http.createServer(async (request, response) => {
+  console.log(`[${new Date().toLocaleTimeString()}] ${request.method} ${request.url}`);
   const origin = request.headers.origin;
   if (request.method === "OPTIONS") return sendJson(response, 204, {}, origin);
   if (request.method === "GET" && request.url === "/health") return sendJson(response, 200, { ok: true, model: LM_MODEL, curriculumPages: pages.length }, origin);
   if (request.method === "POST" && request.url === "/api/evaluate") {
     try { return await handleEvaluate(JSON.parse(await readBody(request)), response, origin); }
-    catch (error) { return sendJson(response, 400, { error: error.message, needsInstructorReview: true }, origin); }
+    catch (error) {
+      console.error(`[Evaluation] Bad request: ${error.message}`);
+      return sendJson(response, 400, { error: error.message, needsInstructorReview: true }, origin);
+    }
   }
   sendJson(response, 404, { error: "Not found." }, origin);
 });

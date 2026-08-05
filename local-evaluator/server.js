@@ -11,7 +11,8 @@ const MIME = {
   ".js": "text/javascript; charset=utf-8",
   ".md": "text/markdown; charset=utf-8",
   ".xls": "application/vnd.ms-excel",
-  ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ".zip": "application/zip"
 };
 
 function send(response, status, body, type = "text/plain; charset=utf-8") {
