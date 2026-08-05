@@ -4,6 +4,7 @@ outputs/
 docx_render_check/
 docx_render_check_v2/
 work_spreadsheets/
+graphify-out/
 
 # Local source documents and student submissions
 *.docx
