@@ -140,11 +140,13 @@ function parseObjectives(text) {
 }
 
 function selectedObjectiveLabels() {
-  return [...objectiveList.querySelectorAll("input:checked")].map(input => objectives[Number(input.value)]?.label).filter(Boolean);
+  return selectedObjectives().map(objective => objective.label);
 }
 
 function selectedObjectives() {
-  return [...objectiveList.querySelectorAll("input:checked")].map(input => objectives[Number(input.value)]).filter(Boolean);
+  return [...objectiveList.querySelectorAll(".objective-option[aria-pressed='true']")]
+    .map(button => objectives[Number(button.dataset.index)])
+    .filter(Boolean);
 }
 
 function renderObjectives(text) {
@@ -164,17 +166,18 @@ function renderObjectives(text) {
     options.className = "objective-options";
     options.append(...group.items.map(objective => {
       const index = objectives.indexOf(objective);
-      const label = document.createElement("label");
-      label.className = "objective-option";
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.value = String(index);
-      checkbox.checked = selected.has(objective.label);
-      checkbox.addEventListener("change", updateEvaluationAvailability);
-      const text = document.createElement("span");
-      text.textContent = objective.label;
-      label.append(checkbox, text);
-      return label;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "objective-option";
+      button.dataset.index = String(index);
+      button.setAttribute("aria-pressed", selected.has(objective.label) ? "true" : "false");
+      button.textContent = objective.label;
+      button.addEventListener("click", () => {
+        const isSelected = button.getAttribute("aria-pressed") === "true";
+        button.setAttribute("aria-pressed", String(!isSelected));
+        updateEvaluationAvailability();
+      });
+      return button;
     }));
     section.append(heading, options);
     return section;

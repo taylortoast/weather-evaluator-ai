@@ -9,7 +9,9 @@ const MIME = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
-  ".md": "text/markdown; charset=utf-8"
+  ".md": "text/markdown; charset=utf-8",
+  ".xls": "application/vnd.ms-excel",
+  ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 };
 
 function send(response, status, body, type = "text/plain; charset=utf-8") {
@@ -28,6 +30,13 @@ http.createServer((request, response) => {
   const urlPath = decodeURIComponent(new URL(request.url, "http://127.0.0.1").pathname);
   if (urlPath === "/course/course-reference.md") {
     return fileResponse(response, path.join(ROOT, "..", "local-agent", "course", "course-reference.md"));
+  }
+  if (urlPath.startsWith("/docs/")) {
+    const docsRoot = path.join(ROOT, "..", "docs");
+    const docsPath = path.normalize(path.join(docsRoot, urlPath.slice("/docs/".length)));
+    const relative = path.relative(docsRoot, docsPath);
+    if (relative.startsWith("..") || path.isAbsolute(relative)) return send(response, 403, "Forbidden.");
+    return fileResponse(response, docsPath);
   }
   const localPath = path.normalize(path.join(ROOT, urlPath === "/" ? "index.html" : urlPath));
   const relative = path.relative(ROOT, localPath);
