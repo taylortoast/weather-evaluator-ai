@@ -9,31 +9,24 @@ Local tools for extracting and evaluating 333 TRS Weather student workbook submi
 - A modern browser such as Edge, Chrome, or Firefox.
 - LM Studio, or another local OpenAI-compatible chat-completions server, running an instruction-following LLM. The default setup expects LM Studio at `http://127.0.0.1:1234` with the `google/gemma-3-4b` model loaded.
 
-## Components
+## Servers
 
-- `local-evaluator/`: browser UI for uploading Excel workbooks, selecting course objectives, and reviewing one evaluation result per student submission.
-- `local-agent/`: Node.js service that retrieves course-reference context and calls an OpenAI-compatible LM Studio endpoint.
+- **Local Agent** (`local-agent/`, port `8787`): the Node.js evaluation service. It retrieves course-reference context and sends submissions to the local OpenAI-compatible LLM. Its health check is `http://localhost:8787/health`.
+- **Local Evaluator** (`local-evaluator/`, port `5500`): the browser web server and instructor interface for uploading Excel workbooks, selecting objectives, and reviewing results. Open `http://localhost:5500/`.
 
 ## Quick Start
 
 Start LM Studio first, load `google/gemma-3-4b`, and enable its local server on port `1234`.
 
-Start the local agent:
+From the project root, start both servers:
 
 ```powershell
-cd "C:\Users\Admin\Documents\Web\333 TRS Weather AI"
-$env:LM_STUDIO_API_TOKEN = "your-local-token"
-$env:LM_STUDIO_BASE_URL = "http://127.0.0.1:1234"
-$env:LM_STUDIO_MODEL = "google/gemma-3-4b"
-node .\local-agent\server.js
+.\start.ps1
 ```
 
-Start the evaluator UI:
+The launcher stops any existing processes on ports `8787` and `5500`, then opens a PowerShell window for each server. Leave both windows open while using the evaluator. Stop the servers with `Ctrl+C` in those windows.
 
-```powershell
-cd "C:\Users\Admin\Documents\Web\333 TRS Weather AI\local-evaluator"
-.\start-server.ps1
-```
+The default agent configuration uses `http://127.0.0.1:1234` and `google/gemma-3-4b`. To use a different local LLM server or model, set `LM_STUDIO_BASE_URL`, `LM_STUDIO_MODEL`, and (if needed) `LM_STUDIO_API_TOKEN` in the same PowerShell window before running `.\start.ps1`.
 
 Open `http://localhost:5500/` on the host PC. From another PC on the same LAN, open `http://HOST-PC-IP:5500/`.
 
