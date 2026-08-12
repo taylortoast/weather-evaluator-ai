@@ -48,12 +48,12 @@ Correct answers are shown only as a count. Partially correct and incorrect answe
 - Mission Forecaster: `MEF Forecast Reasoning`
 - Station Forecaster: `TAF Forecast Reasoning`
 
-## Course Reference
+## Objective References
 
-The objective picker loads:
+The objective picker loads objectives from:
 
 ```text
-../local-agent/course/course-reference.md
+../local-agent/course/reference-manifest.json
 ```
 
-The local agent uses the same file for retrieval, so the UI and evaluation context stay aligned.
+The local agent uses the same manifest for retrieval, so the UI and evaluation context stay aligned. Distilled PDFs listed there are automatically included when their associated objective is selected.

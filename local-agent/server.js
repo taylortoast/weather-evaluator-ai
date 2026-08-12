@@ -16,14 +16,23 @@ const allowedOrigin = origin => /^https?:\/\/(127\.0\.0\.1|localhost|10(?:\.\d{1
 
 const agentInstructions = fs.readFileSync(path.join(ROOT, "AGENT.md"), "utf8");
 const rules = JSON.parse(fs.readFileSync(path.join(ROOT, "rules", "evaluation-rules.json"), "utf8"));
-const coursePath = path.join(ROOT, "course", "course-reference.md");
-const pages = fs.readFileSync(coursePath, "utf8")
-  .split(/(?=^###\s+)/gm)
-  .map(text => text.trim())
-  .filter(text => text.startsWith("### "));
+const courseRoot = path.join(ROOT, "course");
+const referenceManifestPath = path.join(courseRoot, "reference-manifest.json");
 
 function normalizeObjectiveLabel(line) {
   return String(line || "").replace(/^#+\s*/, "").replace(/^([A-Z]?\d+[A-Z]?)\.\s*/, "$1 - ").replace(/\s*(?:-|:|\u2013|\u2014)\s*/, " - ").replace(/\s+/g, " ").trim();
+}
+
+function objectiveCode(line) {
+  return (normalizeObjectiveLabel(line).match(/^([A-Z]?\d+[A-Z]?)(?:\s+-\s+|$)/) || [])[1] || "";
+}
+
+function objectiveMatches(a, b) {
+  const left = normalizeObjectiveLabel(a);
+  const right = normalizeObjectiveLabel(b);
+  const leftCode = objectiveCode(left);
+  const rightCode = objectiveCode(right);
+  return Boolean(left && right && (left === right || (leftCode && leftCode === rightCode)));
 }
 
 function sectionLabel(section) {
@@ -75,9 +84,46 @@ function answerPrompts(submissions) {
   return Object.values(submissions || {}).flatMap(submission => Object.keys(submission.answers || {}));
 }
 
+function readReferenceManifest() {
+  try {
+    const items = JSON.parse(fs.readFileSync(referenceManifestPath, "utf8"));
+    return Array.isArray(items) ? items : [];
+  } catch {
+    return [];
+  }
+}
+
+function resolveCourseFile(relativePath) {
+  const target = path.normalize(path.join(courseRoot, String(relativePath || "")));
+  const relative = path.relative(courseRoot, target);
+  if (!relative || relative.startsWith("..") || path.isAbsolute(relative)) return null;
+  return target;
+}
+
+function selectedReferencePages(request) {
+  const selectedObjectives = (request.scope?.objectives || []).map(normalizeObjectiveLabel);
+  if (!selectedObjectives.length) return [];
+  return readReferenceManifest()
+    .filter(item => selectedObjectives.some(objective => objectiveMatches(objective, item.objective)))
+    .flatMap(item => {
+      const filePath = resolveCourseFile(item.path);
+      if (!filePath) return [];
+      try {
+        const text = fs.readFileSync(filePath, "utf8");
+        return text.split(/(?=^##\s+Page\s+\d+)/gm)
+          .map(section => section.trim())
+          .filter(section => section.startsWith("## Page "))
+          .map(section => `### Reference: ${item.title}\nSource: ${item.source}\n\n${section}`);
+      } catch {
+        return [];
+      }
+    });
+}
+
 function retrieveContext(request) {
   const answerText = Object.values(request.submissions || {}).map(submission => JSON.stringify(submission)).join(" ");
   const selectedObjectives = new Set((request.scope?.objectives || []).map(normalizeObjectiveLabel));
+  const objectiveReferencePages = selectedReferencePages(request);
   const queryWords = words([
     JSON.stringify(request.scope || {}),
     request.objective,
@@ -85,12 +131,14 @@ function retrieveContext(request) {
     request.instructions,
     answerText
   ].join(" "));
-  const ranked = pages.map((page, index) => {
-    const pageWords = words(page);
+  const availablePages = objectiveReferencePages.map((page, index) => ({ page, index, selectedReference: true }));
+  const ranked = availablePages.map(item => {
+    const pageWords = words(item.page);
     let score = 0;
-    if (selectedObjectives.has(sectionLabel(page))) score += 1000;
+    if (selectedObjectives.has(sectionLabel(item.page))) score += 1000;
+    score += 200;
     for (const word of queryWords) if (pageWords.has(word)) score += 1;
-    return { page, index, score };
+    return { ...item, score };
   }).sort((a, b) => b.score - a.score || a.index - b.index);
   const selected = [];
   let size = 0;
@@ -111,7 +159,7 @@ function buildUserPrompt(request, context) {
     "Use only the instructor scope, retrieved course reference sections, instructions, and rubric.",
     "Return JSON only. Do not include markdown fences.",
     `Instructor scope: ${JSON.stringify(request.scope || {})}`,
-    `Retrieved course reference sections:\n${context || "No matching course reference section was found."}`,
+    `Retrieved objective-focused reference sections:\n${context || "No matching objective-focused reference file was found."}`,
     `Evaluation instructions: ${request.instructions || "None supplied."}`,
     `Rubric: ${request.rubric || "None supplied."}`,
     `The submission contains ${prompts.length} answer items. Return exactly ${prompts.length} fieldEvaluations entries, one per answer, in this exact order: ${JSON.stringify(prompts)}.`,
@@ -120,7 +168,7 @@ function buildUserPrompt(request, context) {
     `Selected objectives: ${JSON.stringify(objectives)}.`,
     "The objective field must include the objective code and title most directly used to evaluate that answer, for example: 5D - Terminal Aerodrome Forecast (TAF).",
     "The prompt field must repeat the exact evaluated answer prompt from the ordered list.",
-    "The citation field must identify where the rule or concept appears in the original PDF using this format when a page marker is available: Complete_Curriculum_Text.pdf p. <page>. If no page marker supports the finding, cite the selected objective heading.",
+    "The citation field must identify where the rule or concept appears in the original source PDF using this format when a page marker is available: <source file> p. <page>. If no page marker supports the finding, cite the selected objective heading or reference title.",
     `Submissions: ${JSON.stringify(request.submissions || {})}`
   ].join("\n\n");
 }
@@ -248,7 +296,11 @@ const server = http.createServer(async (request, response) => {
   console.log(`[${new Date().toLocaleTimeString()}] ${request.method} ${request.url}`);
   const origin = request.headers.origin;
   if (request.method === "OPTIONS") return sendJson(response, 204, {}, origin);
-  if (request.method === "GET" && request.url === "/health") return sendJson(response, 200, { ok: true, model: LM_MODEL, curriculumPages: pages.length }, origin);
+  if (request.method === "GET" && request.url === "/health") {
+    const manifest = readReferenceManifest();
+    const objectives = new Set(manifest.map(item => normalizeObjectiveLabel(item.objective)).filter(Boolean));
+    return sendJson(response, 200, { ok: true, model: LM_MODEL, objectives: objectives.size, references: manifest.length }, origin);
+  }
   if (request.method === "POST" && request.url === "/api/evaluate") {
     try { return await handleEvaluate(JSON.parse(await readBody(request)), response, origin); }
     catch (error) {

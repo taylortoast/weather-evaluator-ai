@@ -86,7 +86,7 @@ $env:LM_STUDIO_MODEL = "google/gemma-3-4b"
 node .\local-agent\server.js</code></pre>
         <p>
           Check <code>http://localhost:8787/health</code>. A healthy response
-          reports <code>"ok": true</code> and a course reference count.
+          reports <code>"ok": true</code>, plus objective and reference counts.
         </p>
         <p>Start the evaluator UI from another PowerShell window:</p>
         <pre><code>cd "C:\Users\Admin\Documents\Web\333 TRS Weather AI\local-evaluator"
@@ -138,17 +138,19 @@ node .\local-agent\server.js</code></pre>
         <h2>3. Set the evaluation scope</h2>
         <p>
           Section 02 lists objectives from
-          <code>local-agent/course/course-reference.md</code>. Select the
+          <code>local-agent/course/reference-manifest.json</code>. Select the
           objectives that apply to the uploaded submissions.
         </p>
         <p>
-          The UI groups objectives by unit. There are no course, block, lesson,
-          instruction, rubric, or extracted-data fields to complete.
+          Objectives appear after focused PDFs have been distilled into
+          <code>local-agent/course/references/</code>. There are no course,
+          block, lesson, instruction, rubric, or extracted-data fields to
+          complete.
         </p>
         <p>
           The selected objectives are sent to the local agent. The agent
-          retrieves only the matching course-reference sections and uses those
-          sections as the evaluation context.
+          retrieves only the reference files linked to those objectives and
+          uses those files as the evaluation context.
         </p>
       </section>
 
@@ -178,7 +180,7 @@ node .\local-agent\server.js</code></pre>
         </p>
         <p>
           The AI output is still an instructor-review draft. Confirm the cited
-          course reference supports the finding before sending feedback to a
+          objective reference supports the finding before sending feedback to a
           student.
         </p>
       </section>

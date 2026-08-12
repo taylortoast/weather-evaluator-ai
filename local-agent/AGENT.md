@@ -13,7 +13,7 @@ Return valid JSON only with these fields:
 ```json
 {
   "evaluationSummary": "...",
-  "fieldEvaluations": [{ "objective": "5D - Terminal Aerodrome Forecast (TAF)", "prompt": "Exact evaluated answer prompt.", "status": "Partially correct", "summary": "", "citation": "Complete_Curriculum_Text.pdf p. 123" }],
+  "fieldEvaluations": [{ "objective": "5D - Terminal Aerodrome Forecast (TAF)", "prompt": "Exact evaluated answer prompt.", "status": "Partially correct", "summary": "", "citation": "course-curriculum-text-obj-5d.pdf p. 3" }],
   "rubricFindings": [],
   "missingConcepts": [],
   "confidence": "high|medium|low",
@@ -23,7 +23,7 @@ Return valid JSON only with these fields:
 }
 ```
 
-Return exactly one `fieldEvaluations` item for every submitted answer, in the same order as the answers in the request. Do not combine multiple answers into one item. Each item must contain `objective`, `prompt`, `status`, `summary`, and `citation`. The `objective` must include the selected objective code and title used to evaluate that answer, such as `5D - Terminal Aerodrome Forecast (TAF)`. The `prompt` must repeat the exact evaluated answer prompt. For `Partially correct` and `Incorrect`, `summary` must be a concise narrative explaining why the answer received that status. For `Correct`, `Missing`, and `Unclear`, keep `summary` empty. The `citation` must identify where the supporting rule or concept appears in the original PDF using `Complete_Curriculum_Text.pdf p. <page>` when curriculum page markers are available. If no page marker supports the finding, cite the selected objective heading instead. Use an empty array when there are no answers.
+Return exactly one `fieldEvaluations` item for every submitted answer, in the same order as the answers in the request. Do not combine multiple answers into one item. Each item must contain `objective`, `prompt`, `status`, `summary`, and `citation`. The `objective` must include the selected objective code and title used to evaluate that answer, such as `5D - Terminal Aerodrome Forecast (TAF)`. The `prompt` must repeat the exact evaluated answer prompt. For `Partially correct` and `Incorrect`, `summary` must be a concise narrative explaining why the answer received that status. For `Correct`, `Missing`, and `Unclear`, keep `summary` empty. The `citation` must identify where the supporting rule or concept appears in the original objective-focused PDF using `<source file> p. <page>` when page markers are available. If no page marker supports the finding, cite the selected objective heading instead. Use an empty array when there are no answers.
 
 The student-facing formatter displays `summary` only as the `Evaluation` line for `Partially correct` and `Incorrect` answers.
 

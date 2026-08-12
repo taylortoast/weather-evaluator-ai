@@ -1,6 +1,6 @@
 const COURSE = "335 TRS Weather";
 const EVALUATION_INSTRUCTIONS = "Evaluate only against the selected objective content. Identify missing concepts, explain the reasoning clearly, and flag uncertain or insufficient-context results for instructor review.";
-const COURSE_REFERENCE_URL = "/course/course-reference.md";
+const REFERENCE_MANIFEST_URL = "/course/reference-manifest.json";
 const WORKBOOK_TYPES = [
   { name: "Mission Forecaster", sheet: "MEF Forecast Reasoning", rows: [3, 8, 13, 18, 23, 28, 33, 38, 43, 48, 53, 58] },
   { name: "Station Forecaster", sheet: "TAF Forecast Reasoning", rows: [3, 8, 13, 18, 23, 28, 33, 38] }
@@ -23,6 +23,7 @@ const endpoint = $("#endpoint");
 let parsedSubmissions = { submissions: {} };
 let validFiles = [];
 let objectives = [];
+let references = [];
 
 if (endpoint && ["127.0.0.1", "localhost"].includes(location.hostname)) {
   endpoint.value = "http://127.0.0.1:8787/api/evaluate";
@@ -112,31 +113,16 @@ function normalizeObjectiveLabel(line) {
   return line.replace(/^#+\s*/, "").replace(/^([A-Z]?\d+[A-Z]?)\.\s*/, "$1 - ").replace(/\s*(?:-|:|\u2013|\u2014)\s*/, " - ").replace(/\s+/g, " ").trim();
 }
 
-function parseObjectives(text) {
-  const unitMatches = [...text.matchAll(/^##\s+((?:BLK\s+[IVX]+\s+-\s+)?Unit\s+\d+:\s+[^\r\n]+)/gim)];
-  const objectiveMatches = [...text.matchAll(/^###\s+((?:\d+[A-Z]|[A-Z]\d+)\.\s+[^\r\n]+)/gim)];
-  const parsed = objectiveMatches.map((match, index) => {
-    let unit = null;
-    let unitIndex = -1;
-    unitMatches.forEach((unitMatch, candidateIndex) => {
-      if (unitMatch.index < match.index) {
-        unit = unitMatch;
-        unitIndex = candidateIndex;
-      }
-    });
-    return {
-    id: `objective-${index}`,
-    label: normalizeObjectiveLabel(match[1]),
-    unitKey: unit ? `unit-${unitIndex}` : "unit-other",
-    unit: unit ? unit[1].trim() : "Other Objectives",
-    content: text.slice(match.index, objectiveMatches[index + 1]?.index ?? text.length).trim()
-    };
-  });
-  return [...parsed.reduce((map, objective) => {
-    if (!map.has(objective.label)) map.set(objective.label, objective);
-    else map.get(objective.label).content += `\n\n${objective.content}`;
-    return map;
-  }, new Map()).values()];
+function objectiveCode(line) {
+  return (normalizeObjectiveLabel(line).match(/^([A-Z]?\d+[A-Z]?)(?:\s+-\s+|$)/) || [])[1] || "";
+}
+
+function objectiveMatches(a, b) {
+  const left = normalizeObjectiveLabel(a);
+  const right = normalizeObjectiveLabel(b);
+  const leftCode = objectiveCode(left);
+  const rightCode = objectiveCode(right);
+  return Boolean(left && right && (left === right || (leftCode && leftCode === rightCode)));
 }
 
 function selectedObjectiveLabels() {
@@ -149,9 +135,28 @@ function selectedObjectives() {
     .filter(Boolean);
 }
 
-function renderObjectives(text) {
+function referencesForObjective(label) {
+  return references.filter(reference => objectiveMatches(label, reference.objective));
+}
+
+function objectiveItemsFromReferences(items) {
+  return [...items.reduce((map, reference) => {
+    const label = normalizeObjectiveLabel(reference.objective);
+    if (label && !map.has(label)) {
+      map.set(label, {
+        id: `objective-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+        label,
+        unitKey: "unit-objective-references",
+        unit: "Objective-Focused References"
+      });
+    }
+    return map;
+  }, new Map()).values()].sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true }));
+}
+
+function renderObjectives() {
   const selected = new Set(selectedObjectiveLabels());
-  objectives = parseObjectives(text);
+  objectives = objectiveItemsFromReferences(references);
   const groups = objectives.reduce((map, objective) => {
     if (!map.has(objective.unitKey)) map.set(objective.unitKey, { title: objective.unit, items: [] });
     map.get(objective.unitKey).items.push(objective);
@@ -171,7 +176,11 @@ function renderObjectives(text) {
       button.className = "objective-option";
       button.dataset.index = String(index);
       button.setAttribute("aria-pressed", selected.has(objective.label) ? "true" : "false");
-      button.textContent = objective.label;
+      const linkedReferences = referencesForObjective(objective.label);
+      button.textContent = linkedReferences.length
+        ? `${objective.label} (${linkedReferences.length} ref${linkedReferences.length === 1 ? "" : "s"})`
+        : objective.label;
+      button.title = linkedReferences.map(reference => reference.source).join("\n");
       button.addEventListener("click", () => {
         const isSelected = button.getAttribute("aria-pressed") === "true";
         button.setAttribute("aria-pressed", String(!isSelected));
@@ -188,27 +197,34 @@ function renderObjectives(text) {
   updateEvaluationAvailability();
 }
 
+function renderReferences(items) {
+  references = Array.isArray(items) ? items : [];
+  renderObjectives();
+}
+
 async function loadObjectives() {
   try {
-    const response = await fetch(COURSE_REFERENCE_URL);
-    if (!response.ok) throw new Error(`Course reference returned HTTP ${response.status}.`);
-    renderObjectives(await response.text());
-  } catch (error) {
-    objectiveStatus.textContent = "Start the local page server to load the course reference.";
-    objectiveList.replaceChildren();
+    const response = await fetch(REFERENCE_MANIFEST_URL);
+    if (!response.ok) throw new Error(`Reference manifest returned HTTP ${response.status}.`);
+    renderReferences(await response.json());
+  } catch {
+    references = [];
     objectives = [];
+    objectiveStatus.textContent = "No objective-focused reference catalog was found.";
+    objectiveList.replaceChildren();
     updateEvaluationAvailability();
   }
 }
 
 function updateEvaluationAvailability() {
   const selectedCount = selectedObjectives().length;
+  const referenceCount = selectedObjectives().flatMap(objective => referencesForObjective(objective.label)).length;
   evaluateButton.disabled = validFiles.length === 0 || selectedCount === 0;
   evaluationStatus.textContent = validFiles.length === 0
     ? "Upload at least one valid workbook and select at least one objective to enable evaluation."
     : selectedCount === 0
       ? "Select at least one objective to enable evaluation."
-      : `${validFiles.length} student submission${validFiles.length === 1 ? "" : "s"} ready for evaluation.`;
+      : `${validFiles.length} student submission${validFiles.length === 1 ? "" : "s"} ready for evaluation${referenceCount ? ` with ${referenceCount} reference file${referenceCount === 1 ? "" : "s"}` : ""}.`;
 }
 
 function buildEvaluationRequest(name, submission) {

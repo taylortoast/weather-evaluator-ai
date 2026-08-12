@@ -11,7 +11,7 @@ Local tools for extracting and evaluating 333 TRS Weather student workbook submi
 
 ## Servers
 
-- **Local Agent** (`local-agent/`, port `8787`): the Node.js evaluation service. It retrieves course-reference context and sends submissions to the local OpenAI-compatible LLM. Its health check is `http://localhost:8787/health`.
+- **Local Agent** (`local-agent/`, port `8787`): the Node.js evaluation service. It retrieves objective-focused reference context and sends submissions to the local OpenAI-compatible LLM. Its health check is `http://localhost:8787/health`.
 - **Local Evaluator** (`local-evaluator/`, port `5500`): the browser web server and instructor interface for uploading Excel workbooks, selecting objectives, and reviewing results. Open `http://localhost:5500/`.
 
 ## Quick Start
@@ -40,15 +40,22 @@ Open `http://localhost:5500/` on the host PC. From another PC on the same LAN, o
 
 Correct answers are returned only as a count. Partially correct and incorrect answers list the objective, evaluated answer text, evaluation narrative, and PDF citation. Missing and unclear answers omit the evaluation narrative.
 
-## Course Reference
+## Objective References
 
-Both the UI objective picker and local agent retrieval use one reference file:
+The UI objective picker and local agent use distilled, objective-focused reference files:
 
 ```text
-local-agent/course/course-reference.md
+local-agent/course/reference-manifest.json
+local-agent/course/references/
 ```
 
-That file contains objective sections and citations back to `Complete_Curriculum_Text.pdf`.
+Objective-specific reference PDFs can be distilled into markdown tied to the selected objective:
+
+```powershell
+python .\local-agent\tools\distill-pdf.py .\docs\AI-References\DAFI15-129-obj-2b.pdf --objective 2B --title DAFI15-129
+```
+
+The command writes `local-agent/course/references/<id>.md` and updates `local-agent/course/reference-manifest.json`. In Section 02, selecting that objective automatically includes its linked reference markdown in the evaluator context. Use focused files such as `course-curriculum-text-obj-2b.pdf`, `course-curriculum-text-obj-3a.pdf`, `AFMAN15-124-obj-3a.pdf`, and `AFMAN15-124-obj-3b.pdf`.
 
 ## Supported Workbooks
 

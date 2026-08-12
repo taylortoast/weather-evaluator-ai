@@ -1,6 +1,6 @@
 # Local Evaluation Agent
 
-Node.js service that retrieves selected course objective context from `course/course-reference.md`, calls LM Studio, validates the model response, and returns instructor-review text to the evaluator UI.
+Node.js service that retrieves distilled reference PDFs linked to the selected objectives, calls LM Studio, validates the model response, and returns instructor-review text to the evaluator UI.
 
 ## Start
 
@@ -26,7 +26,8 @@ Expected response includes:
 {
   "ok": true,
   "model": "google/gemma-3-4b",
-  "curriculumPages": 20
+  "objectives": 0,
+  "references": 0
 }
 ```
 
@@ -38,7 +39,7 @@ The UI sends each student document as a separate evaluation request with:
 - extracted workbook answers
 - fixed evaluation instructions
 
-The agent retrieves matching sections from `course/course-reference.md`. It does not use `curriculum.txt`, `objective-notes.md`, or a second reference source.
+The agent retrieves entries in `course/reference-manifest.json` whose `objective` matches the selected objective. It does not use `course-reference.md`, `curriculum.txt`, or `objective-notes.md`.
 
 Returned output:
 
