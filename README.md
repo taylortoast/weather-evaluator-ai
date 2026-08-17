@@ -49,13 +49,17 @@ local-agent/course/reference-manifest.json
 local-agent/course/references/
 ```
 
-Objective-specific reference PDFs can be distilled into markdown tied to the selected objective:
+Objective-specific reference PDFs can be distilled into markdown tied to the selected objective. For the normal workflow, place the PDFs in `docs/AI-References/` and double-click `distill-ai-references.cmd`.
 
-```powershell
-python .\local-agent\tools\distill-pdf.py .\docs\AI-References\DAFI15-129-obj-2b.pdf --objective 2B --title DAFI15-129
-```
+The launcher processes every PDF whose filename contains `Obj-<code>`, writes markdown to `local-agent/course/references/`, and updates `local-agent/course/reference-manifest.json`. In Section 02, selecting that objective automatically includes its linked reference markdown in the evaluator context.
 
-The command writes `local-agent/course/references/<id>.md` and updates `local-agent/course/reference-manifest.json`. In Section 02, selecting that objective automatically includes its linked reference markdown in the evaluator context. Use focused files such as `course-curriculum-text-obj-2b.pdf`, `course-curriculum-text-obj-3a.pdf`, `AFMAN15-124-obj-3a.pdf`, and `AFMAN15-124-obj-3b.pdf`.
+### One-click batch distillation
+
+1. Place PDFs named like `AFMAN-15-124-Obj-3a.pdf` in `docs/AI-References/`.
+2. Double-click `distill-ai-references.cmd`.
+3. Review the generated markdown in `local-agent/course/references/`.
+
+The batch command processes every PDF whose filename contains `Obj-<code>` and updates the manifest. Files without an objective code are listed as skipped so they can be assigned safely with `--objective`.
 
 ## Supported Workbooks
 

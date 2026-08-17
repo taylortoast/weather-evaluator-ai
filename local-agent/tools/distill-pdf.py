@@ -65,22 +65,7 @@ def normalize_objective(value):
     return re.sub(r"^([A-Z]?\d+[A-Z]?)\.\s*", r"\1 - ", text, flags=re.IGNORECASE).strip().upper()
 
 
-def main():
-    default_course_dir = Path(__file__).resolve().parents[1] / "course"
-    parser = argparse.ArgumentParser(description="Distill a PDF into scoped markdown for the local evaluator.")
-    parser.add_argument("pdf", type=Path)
-    parser.add_argument("--course-dir", type=Path, default=default_course_dir)
-    parser.add_argument("--title")
-    parser.add_argument("--id")
-    parser.add_argument("--objective", help="Objective code or label, for example 2B or \"2B - Objective title\". If omitted, the tool infers it from names like *-obj-2b.pdf.")
-    parser.add_argument("--out", type=Path)
-    args = parser.parse_args()
-
-    pdf_path = args.pdf.resolve()
-    if not pdf_path.exists():
-        raise SystemExit(f"PDF not found: {pdf_path}")
-
-    course_dir = args.course_dir.resolve()
+def distill(pdf_path, args, course_dir):
     references_dir = course_dir / "references"
     references_dir.mkdir(parents=True, exist_ok=True)
 
@@ -88,7 +73,7 @@ def main():
     title = args.title or pdf_path.stem
     objective = normalize_objective(args.objective or infer_objective(pdf_path))
     if not objective:
-        raise SystemExit("Objective is required. Pass --objective 2B or use a filename like course-curriculum-text-obj-2b.pdf.")
+        raise ValueError("objective code not found; add -Obj-<code> to the filename or pass --objective")
     out_path = (args.out or references_dir / f"{reference_id}.md").resolve()
 
     chunks = [f"# {title}", "", f"Source: {pdf_path.name}", ""]
@@ -103,7 +88,7 @@ def main():
         pages_written += 1
 
     if pages_written == 0:
-        raise SystemExit(f"No extractable text found in {pdf_path.name}. OCR may be required.")
+        raise ValueError("no extractable text found; OCR may be required")
 
     out_path.write_text("\n".join(chunks).rstrip() + "\n", encoding="utf-8")
     upsert_manifest(course_dir, {
@@ -115,8 +100,42 @@ def main():
         "pages": pages_written,
         "blankPages": blank_pages
     })
-    print(f"Wrote {out_path}")
-    print(f"Pages with text: {pages_written}; blank pages skipped: {blank_pages}")
+    print(f"Wrote {out_path.name} ({pages_written} pages; {blank_pages} blank skipped)")
+
+
+def main():
+    default_course_dir = Path(__file__).resolve().parents[1] / "course"
+    parser = argparse.ArgumentParser(description="Distill one PDF or every objective PDF in a folder.")
+    parser.add_argument("pdf", type=Path, help="PDF file or folder containing PDFs")
+    parser.add_argument("--course-dir", type=Path, default=default_course_dir)
+    parser.add_argument("--title")
+    parser.add_argument("--id")
+    parser.add_argument("--objective", help="Objective code or label, for example 2B or \"2B - Objective title\". If omitted, the tool infers it from names like *-obj-2b.pdf.")
+    parser.add_argument("--out", type=Path)
+    args = parser.parse_args()
+
+    course_dir = args.course_dir.resolve()
+    input_path = args.pdf.resolve()
+    if not input_path.exists():
+        raise SystemExit(f"PDF or folder not found: {input_path}")
+    if input_path.is_dir():
+        files = sorted(input_path.glob("*.pdf"))
+        if not files:
+            raise SystemExit(f"No PDF files found in {input_path}")
+        skipped = []
+        for pdf_path in files:
+            try:
+                distill(pdf_path, args, course_dir)
+            except ValueError as error:
+                skipped.append(f"{pdf_path.name}: {error}")
+        if skipped:
+            print("Skipped:")
+            print("\n".join(f"- {item}" for item in skipped))
+        return
+    try:
+        distill(input_path, args, course_dir)
+    except ValueError as error:
+        raise SystemExit(f"{input_path.name}: {error}")
 
 
 if __name__ == "__main__":
