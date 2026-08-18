@@ -1,6 +1,6 @@
 # 333 TRS Local Evaluator
 
-Browser UI for extracting student answers from Mission Forecaster and Station Forecaster Excel workbooks, selecting course objectives, and reviewing one local AI evaluation per student submission.
+Browser UI for extracting mapped answers from standardized METOC Product Package Excel workbooks, selecting course objectives, and reviewing one local AI evaluation per student submission.
 
 ## Start
 
@@ -35,18 +35,22 @@ Run the local agent on the host PC before evaluating work.
 
 ## Workflow
 
-1. Upload one or more `.xlsx` or `.xls` workbooks.
-2. Select one or more objectives in Section 02.
-3. Click `Evaluate work`.
-4. Review one result box per workbook.
-5. Use the result box `Copy` button if the instructor wants to preserve or share the result.
+1. Name each workbook `METOC-Product-Package-Lastname-Firstname.xlsx`.
+2. Upload one or more `.xlsx` or `.xls` workbooks.
+3. Select one current objective in Section 02.
+4. Click `Evaluate work`.
+5. Review one result box per workbook.
+6. Use the result box `Copy` button if the instructor wants to preserve or share the result.
 
-Correct answers are shown only as a count. Partially correct and incorrect answers include the objective, evaluated answer, evaluation narrative, and PDF citation. Missing and unclear answers omit the evaluation narrative.
+Correct answers are shown as list items; Missing answers are shown only as a count. Partially correct and incorrect answers include the objective, evaluated answer, evaluation narrative, and PDF citation. Unclear answers remain in the review section.
 
 ## Supported Workbook Types
 
-- Mission Forecaster: `MEF Forecast Reasoning`
-- Station Forecaster: `TAF Forecast Reasoning`
+- Standardized METOC package: mapped cells in `worksheet-mapping.json` across the expanded workbook worksheets.
+- Legacy Mission Forecaster: `MEF Forecast Reasoning`
+- Legacy Station Forecaster: `TAF Forecast Reasoning`
+
+Mapped blank cells are reported as `Missing`. Evaluation results retain the worksheet and cell address for instructor review.
 
 ## Objective References
 

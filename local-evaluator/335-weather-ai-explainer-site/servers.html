@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Run the Local Site · 335 TRS Weather AI</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page">
+      <nav class="site-nav" aria-label="Main navigation">
+        <a class="brand" href="index.html">335 TRS <span>Weather AI</span></a>
+        <div class="nav-links"><a href="../index.html">Home</a><a href="source-pdfs.html">Source PDFs</a><a href="distiller.html">Distiller</a><a class="active" href="servers.html">Local site</a></div>
+      </nav>
+
+      <header class="page-header">
+        <p class="eyebrow">03 · Local site</p>
+        <h1>Run the evaluator and understand the feedback path.</h1>
+        <p class="lede">The site runs locally: the browser talks to the evaluator, the evaluator sends work to the local agent, and the agent retrieves objective-scoped references before calling the local model.</p>
+      </header>
+
+      <section class="panel command-panel">
+        <h2>Start the local run</h2>
+        <ol class="run-steps">
+          <li>Start LM Studio with <strong>Google/Gemma-3-4B</strong> loaded and the local server on port <code>1234</code>.</li>
+          <li>Double-click <code>start.cmd</code> in the 335 TRS Weather AI project root.</li>
+          <li>Open <code>http://localhost:5500/</code>.</li>
+          <li>Check <code>http://localhost:8787/health</code> if the evaluator cannot reach the agent.</li>
+        </ol>
+        <p class="muted">The CMD launcher calls the implementation in <code>utility/start.ps1</code> and opens one PowerShell window per server.</p>
+        <div class="launch-box">
+          <p class="eyebrow">Open the evaluator</p>
+          <h3>The browser link is not <code>0.0.0.0</code>.</h3>
+          <p>
+            The Local Evaluator listens on <code>0.0.0.0:5500</code>, which means
+            it accepts connections on every network interface. On the same PC,
+            open the site at:
+          </p>
+          <a class="button-link" href="http://localhost:5500/" target="_blank" rel="noopener">Open Local Evaluator ↗</a>
+          <p class="muted">
+            From another PC on the same LAN, replace <code>localhost</code> with
+            the host computer’s IP address, for example
+            <code>http://192.168.1.25:5500/</code>. Do not type
+            <code>http://0.0.0.0:5500</code> as the normal browser address.
+          </p>
+        </div>
+      </section>
+
+      <section class="server-grid">
+        <article class="server-card">
+          <span class="status-dot"></span>
+          <h2>Local Evaluator</h2>
+          <p class="endpoint">localhost:5500</p>
+          <p>The browser interface at <a href="http://localhost:5500/" target="_blank" rel="noopener"><code>localhost:5500</code></a>. Upload workbooks, select objectives in Section 02, and review each student result.</p>
+        </article>
+        <article class="server-card">
+          <span class="status-dot"></span>
+          <h2>Local Agent</h2>
+          <p class="endpoint">localhost:8787</p>
+          <p>Retrieves matching references, sends the workbook answers and instructions to the local model, validates the response, and returns feedback text.</p>
+        </article>
+        <article class="server-card">
+          <span class="status-dot model"></span>
+          <h2>LM Studio</h2>
+          <p class="endpoint">127.0.0.1:1234</p>
+          <p>Provides the local OpenAI-compatible chat-completions endpoint used by the agent. Keep <strong>Google/Gemma-3-4B</strong> loaded during evaluation.</p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <p class="eyebrow">Feedback path</p>
+        <div class="feedback-flow">
+          <span>Workbook upload</span><b>→</b><span>Objective selection</span><b>→</b><span>Reference retrieval</span><b>→</b><span>Local model</span><b>→</b><span>Instructor result</span>
+        </div>
+        <ol class="feedback-list">
+          <li>The evaluator extracts the selected workbook answers.</li>
+          <li>The selected objectives determine which manifest entries the agent loads.</li>
+          <li>The agent sends the scoped context and evaluation instructions to LM Studio.</li>
+          <li>The evaluator displays concise results: counts for correct work and narratives/citations for partial or incorrect work.</li>
+        </ol>
+      </section>
+
+      <section class="panel two-column">
+        <div>
+          <h2>Before evaluating</h2>
+          <ol>
+            <li>Confirm LM Studio is serving.</li>
+            <li>Confirm the agent health endpoint responds.</li>
+            <li>Confirm the required objective references exist.</li>
+            <li>Upload a workbook and select its objectives.</li>
+          </ol>
+        </div>
+        <div>
+          <h2>Stop the local run</h2>
+          <p>Press <code>Ctrl+C</code> in both server windows. Close LM Studio when finished. Running <code>start.cmd</code> again safely stops listeners on ports <code>8787</code> and <code>5500</code> before restarting.</p>
+        </div>
+      </section>
+
+      <footer class="site-footer"><a href="index.html">← Guide home</a></footer>
+    </main>
+  </body>
+</html>

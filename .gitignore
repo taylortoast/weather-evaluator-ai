@@ -10,6 +10,9 @@ graphify-out/
 *.docx
 *.xlsx
 *.xls
+docs/*
+local-agent/course/references/*
+!local-agent/course/reference-manifest.json
 
 # Local secrets and environment
 .env

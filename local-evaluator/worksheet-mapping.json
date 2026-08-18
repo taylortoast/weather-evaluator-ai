@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "source": "WorksheetMapping.txt",
+  "duplicateEntries": [
+    "5-Day Reasoning!F5",
+    "Model Verification Worksheet!C3",
+    "Model Verification Worksheet!F3",
+    "Model Verification Worksheet!I3"
+  ],
+  "worksheets": [
+    {
+      "name": "Secondary Location Reasoning",
+      "cells": ["B5:C8"]
+    },
+    {
+      "name": "General Forecast Reasoning",
+      "cells": ["C4:C7", "F4:F7", "C9:C12", "F9:F12", "C14:C17", "F14:F17", "C19:C22", "F19:F22", "C24:C27", "F24:F27", "C29:C32", "F29:F32", "C34:C37", "F34:F37", "C39:C42", "F39:F42"]
+    },
+    {
+      "name": "MEF",
+      "cells": [
+        "N6:N36", "X6:X36", "AR6:AR36", "BL6:BL36", "BR6:BR36", "BV6:BV36", "BZ6:BZ36", "CD6:CD36",
+        "U40:U43", "AS40:AS43", "BQ40:BQ43", "BW40:BW43", "CR41:CR43", "DF41:DF43"
+      ]
+    },
+    {
+      "name": "TAF",
+      "cells": ["A2"]
+    },
+    {
+      "name": "5-Day Reasoning",
+      "cells": ["C3:C12", "F3:F12", "C14:C23", "F14:F14", "F16:F23", "C25:C34", "F25:F34", "C36:C45", "F36:F45", "C47:C56", "F47:F56"]
+    },
+    {
+      "name": "Model Verification Worksheet",
+      "cells": ["C3", "F3", "I3", "C5", "F5", "I5", "C7", "F7", "I7", "C9", "F9", "I9", "C12", "F12", "I12", "C14", "F14", "I14", "C16", "F16", "I16", "C18", "F18", "I18", "C21", "F21", "I21", "C23", "F23", "I23", "C25", "F25", "I25", "C27", "F27", "I27", "C30", "F30", "I30", "C32", "F32", "I32", "C34", "F34", "I34", "C36", "F36", "I36", "C39", "F39", "I39", "C41", "F41", "I41", "C43", "F43", "I43", "C45", "F45", "I45"]
+    },
+    {
+      "name": "Analysis Worksheet",
+      "cells": ["B3", "B8", "B13", "B18", "B23", "B28"]
+    }
+  ]
+}

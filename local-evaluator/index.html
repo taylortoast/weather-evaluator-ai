@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>335 TRS Local Evaluator - Scroller Layout</title>
+  <title>335 TRS Local Evaluator</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -15,15 +15,12 @@
         <p class="intro">Upload forecaster workbooks, select the course objectives to evaluate against, and send each student submission to a local AI agent.</p>
       </div>
       <div class="hero-actions">
-        <a href="how-to-use.html">How-to guide -></a>
+        <a class="guide-link" href="335-weather-ai-explainer-site/index.html">How-to guide <span aria-hidden="true">→</span></a>
         <span class="local-badge">Browser-only - local files</span>
       </div>
     </header>
 
-    <div class="section-scroller" aria-label="Evaluator workflow">
-      <button id="prevSection" class="arrow-button arrow-button-prev" type="button" aria-label="Previous section" title="Previous section">&lt;</button>
-      <button id="nextSection" class="arrow-button arrow-button-next" type="button" aria-label="Next section" title="Next section">&gt;</button>
-      <div id="panelTrack" class="panel-track" tabindex="0">
+    <div class="workflow" aria-label="Evaluator workflow">
         <section class="panel" aria-labelledby="uploadHeading">
           <div class="panel-heading">
             <div>
@@ -37,7 +34,7 @@
             <strong>Drop Excel workbooks here</strong>
             <span>or</span>
             <button id="browseButton" type="button">Choose workbooks</button>
-            <small>Mission Forecaster and Station Forecaster .xlsx/.xls files</small>
+            <small>METOC-Product-Package-Lastname-Firstname.xlsx or legacy .xlsx/.xls workbooks</small>
           </div>
           <p id="status" class="status" role="status">No workbooks selected.</p>
           <div id="submissionList" class="submission-list" aria-live="polite"></div>
@@ -47,18 +44,18 @@
           <div class="panel-heading">
             <div>
               <p class="step">02</p>
-              <h2 id="scopeHeading">Set evaluation scope</h2>
+              <h2 id="scopeHeading">Select current objective</h2>
             </div>
-            <span class="muted">Instructor-controlled context</span>
+            <span class="muted">Current objective + prior background knowledge</span>
           </div>
           <div class="field-stack">
-            <div class="objective-field">
-              <div class="label-row">
-                <span>Objectives</span>
-                <small id="objectiveStatus">Loading objective notes...</small>
-              </div>
-              <div id="objectiveList" class="objective-list" aria-live="polite"></div>
-            </div>
+            <label class="objective-select-field" for="objectiveSelect">
+              Current objective being evaluated
+              <select id="objectiveSelect" aria-describedby="objectiveStatus">
+                <option value="">Loading objectives...</option>
+              </select>
+            </label>
+            <p id="objectiveStatus" class="objective-guidance" role="status">Earlier objectives are automatically included as background knowledge.</p>
           </div>
         </section>
 
@@ -68,7 +65,7 @@
               <p class="step">03</p>
               <h2 id="agentHeading">Evaluate locally</h2>
             </div>
-            <span class="muted">OpenAI-compatible endpoint</span>
+            <span class="muted">LM Studio: Google/Gemma-3-4B</span>
           </div>
           <div class="agent-row">
             <label class="endpoint-field">Local agent endpoint<input id="endpoint" type="url" value="http://127.0.0.1:8787/api/evaluate" placeholder="http://127.0.0.1:8787/api/evaluate"></label>
@@ -77,33 +74,9 @@
           <p id="evaluationStatus" class="status" role="status">Upload at least one valid workbook and select at least one objective to enable evaluation.</p>
           <div id="evaluationOutput" class="evaluation-grid" hidden></div>
         </section>
-      </div>
     </div>
   </main>
   <script src="xlsx.full.min.js"></script>
   <script src="app.js"></script>
-  <script>
-    const panelTrack = document.querySelector("#panelTrack");
-    const panels = [...panelTrack.querySelectorAll(".panel")];
-    const prevSection = document.querySelector("#prevSection");
-    const nextSection = document.querySelector("#nextSection");
-    let sectionIndex = 0;
-
-    function showSection(index) {
-      sectionIndex = Math.max(0, Math.min(index, panels.length - 1));
-      panelTrack.style.transform = `translateX(-${sectionIndex * (panels[0].offsetWidth + 18)}px)`;
-      prevSection.disabled = sectionIndex === 0;
-      nextSection.disabled = sectionIndex === panels.length - 1;
-    }
-
-    prevSection.addEventListener("click", () => showSection(sectionIndex - 1));
-    nextSection.addEventListener("click", () => showSection(sectionIndex + 1));
-    panelTrack.addEventListener("keydown", event => {
-      if (event.key === "ArrowLeft") showSection(sectionIndex - 1);
-      if (event.key === "ArrowRight") showSection(sectionIndex + 1);
-    });
-    window.addEventListener("resize", () => showSection(sectionIndex));
-    showSection(sectionIndex);
-  </script>
 </body>
 </html>

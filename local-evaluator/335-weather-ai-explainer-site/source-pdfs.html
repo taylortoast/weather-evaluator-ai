@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Source PDFs · 335 TRS Weather AI</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page">
+      <nav class="site-nav" aria-label="Main navigation">
+        <a class="brand" href="index.html">335 TRS <span>Weather AI</span></a>
+        <div class="nav-links"><a href="../index.html">Home</a><a class="active" href="source-pdfs.html">Source PDFs</a><a href="distiller.html">Distiller</a><a href="servers.html">Local site</a></div>
+      </nav>
+
+      <header class="page-header">
+        <p class="eyebrow">01 · Source PDFs</p>
+        <h1>File the source material once.</h1>
+        <p class="lede">The source folder is the starting point for the local reference workflow. Keep the original PDFs there, use objective-aware filenames, and let the distiller create the AI-readable copies.</p>
+      </header>
+
+      <section class="panel two-column">
+        <div>
+          <h2>Put PDFs here</h2>
+          <pre><code>docs/AI-References/</code></pre>
+          <p>Use the Weather AI project’s root folder as the reference point. Do not place source PDFs in <code>local-agent/course/references/</code>; that folder is for generated Markdown.</p>
+        </div>
+        <div>
+          <h2>Use this filename shape</h2>
+          <pre><code>BLK-1-Unit-4-Obj-4c-PIREPS-and-TAFS.pdf</code></pre>
+          <p>The important part is <code>Obj-&lt;code&gt;</code>. The distiller reads that code and assigns the generated reference to the matching evaluation objective.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Examples</h2>
+        <ul class="examples">
+          <li><code>BLK-1-Unit-4-Obj-4c-PIREPS-and-TAFS.pdf</code></li>
+          <li><code>AFMAN-15-124-Obj-3a.pdf</code></li>
+          <li><code>AFMAN-15-124-Obj-3b.pdf</code></li>
+          <li><code>AFMAN-15-124-Obj-5d.pdf</code></li>
+        </ul>
+      </section>
+
+      <section class="panel callout">
+        <h2>One source, multiple objectives</h2>
+        <p>The current manifest gives each PDF one objective. If one source supports multiple objectives, make a clearly named copy for each code:</p>
+        <pre><code>AFMAN-15-124-Obj-3a.pdf
+AFMAN-15-124-Obj-3b.pdf</code></pre>
+        <p>This keeps objective selection explicit and prevents a broad reference from being loaded into the wrong evaluation scope.</p>
+      </section>
+
+      <section class="panel checklist">
+        <h2>Before distilling</h2>
+        <ol>
+          <li>Confirm the PDF is in <code>docs/AI-References/</code>.</li>
+          <li>Confirm the filename contains <code>Obj-&lt;code&gt;</code>.</li>
+          <li>For multiple objectives, create one copy per objective code.</li>
+          <li>Continue to the <a href="distiller.html">Distiller guide</a>.</li>
+        </ol>
+      </section>
+
+      <footer class="site-footer"><a href="index.html">← Guide home</a></footer>
+    </main>
+  </body>
+</html>
