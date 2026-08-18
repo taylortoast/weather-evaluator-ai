@@ -1,1 +1,191 @@
-[]
+[
+  {
+    "id": "afman-15-124-obj-5d",
+    "title": "AFMAN-15-124-Obj-5d",
+    "objective": "5D",
+    "source": "AFMAN-15-124-Obj-5d.pdf",
+    "path": "references/afman-15-124-obj-5d.md",
+    "pages": 22,
+    "blankPages": 0
+  },
+  {
+    "id": "afman-15-124-obj-6a",
+    "title": "AFMAN-15-124-Obj-6a",
+    "objective": "6A",
+    "source": "AFMAN-15-124-Obj-6a.pdf",
+    "path": "references/afman-15-124-obj-6a.md",
+    "pages": 22,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-1-unit-3-obj-3a-physics-dynamics-and-macroscale-analysis",
+    "title": "BLK-1-Unit-3-Obj-3a-Physics-Dynamics-and-Macroscale-Analysis",
+    "objective": "3A",
+    "source": "BLK-1-Unit-3-Obj-3a-Physics-Dynamics-and-Macroscale-Analysis.pdf",
+    "path": "references/blk-1-unit-3-obj-3a-physics-dynamics-and-macroscale-analysis.md",
+    "pages": 23,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-1-unit-3-obj-3b-synoptic-analysis",
+    "title": "BLK-1-Unit-3-Obj-3b-Synoptic-Analysis",
+    "objective": "3B",
+    "source": "BLK-1-Unit-3-Obj-3b-Synoptic-Analysis.pdf",
+    "path": "references/blk-1-unit-3-obj-3b-synoptic-analysis.md",
+    "pages": 1,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-1-unit-3-obj-3c-mesoscale-analysis",
+    "title": "BLK-1-Unit-3-Obj-3c-Mesoscale-Analysis",
+    "objective": "3C",
+    "source": "BLK-1-Unit-3-Obj-3c-Mesoscale-Analysis.pdf",
+    "path": "references/blk-1-unit-3-obj-3c-mesoscale-analysis.md",
+    "pages": 8,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-1-unit-4-obj-4a-satellite-analysis",
+    "title": "BLK-1-Unit-4-Obj-4a-Satellite-Analysis",
+    "objective": "4A",
+    "source": "BLK-1-Unit-4-Obj-4a-Satellite-Analysis.pdf",
+    "path": "references/blk-1-unit-4-obj-4a-satellite-analysis.md",
+    "pages": 13,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-1-unit-4-obj-4b-surface-weather-observations",
+    "title": "BLK-1-Unit-4-Obj-4b-Surface-Weather-Observations",
+    "objective": "4B",
+    "source": "BLK-1-Unit-4-Obj-4b-Surface-Weather-Observations.pdf",
+    "path": "references/blk-1-unit-4-obj-4b-surface-weather-observations.md",
+    "pages": 9,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-1-unit-4-obj-4c-pireps-and-tafs",
+    "title": "BLK-1-Unit-4-Obj-4c-PIREPS-and-TAFS",
+    "objective": "4C",
+    "source": "BLK-1-Unit-4-Obj-4c-PIREPS-and-TAFS.pdf",
+    "path": "references/blk-1-unit-4-obj-4c-pireps-and-tafs.md",
+    "pages": 9,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-1-unit-4-obj-4d-skew-t-analysis",
+    "title": "BLK-1-Unit-4-Obj-4d-Skew-T-Analysis",
+    "objective": "4D",
+    "source": "BLK-1-Unit-4-Obj-4d-Skew-T-Analysis.pdf",
+    "path": "references/blk-1-unit-4-obj-4d-skew-t-analysis.md",
+    "pages": 15,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-1-unit-4-obj-4e-ocean-tropical-space",
+    "title": "BLK-1-Unit-4-Obj-4e-Ocean-Tropical-Space",
+    "objective": "4E",
+    "source": "BLK-1-Unit-4-Obj-4e-Ocean-Tropical-Space.pdf",
+    "path": "references/blk-1-unit-4-obj-4e-ocean-tropical-space.md",
+    "pages": 25,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-2-unit-2-obj-2a-forecasting-tools",
+    "title": "BLK-2-Unit-2-Obj-2a-Forecasting-Tools",
+    "objective": "2A",
+    "source": "BLK-2-Unit-2-Obj-2a-Forecasting-Tools.pdf",
+    "path": "references/blk-2-unit-2-obj-2a-forecasting-tools.md",
+    "pages": 7,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-2-unit-2-obj-2b-basic-forecast-techniques",
+    "title": "BLK-2-Unit-2-Obj-2b-Basic-Forecast-Techniques",
+    "objective": "2B",
+    "source": "BLK-2-Unit-2-Obj-2b-Basic-Forecast-Techniques.pdf",
+    "path": "references/blk-2-unit-2-obj-2b-basic-forecast-techniques.md",
+    "pages": 29,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-2-unit-3-obj-3a-introduction-to-models",
+    "title": "BLK-2-Unit-3-Obj-3a-Introduction-to-Models",
+    "objective": "3A",
+    "source": "BLK-2-Unit-3-Obj-3a-Introduction-to-Models.pdf",
+    "path": "references/blk-2-unit-3-obj-3a-introduction-to-models.md",
+    "pages": 5,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-2-unit-3-obj-3b-model-interpretation",
+    "title": "BLK-2-Unit-3-Obj-3b-Model-Interpretation",
+    "objective": "3B",
+    "source": "BLK-2-Unit-3-Obj-3b-Model-Interpretation.pdf",
+    "path": "references/blk-2-unit-3-obj-3b-model-interpretation.md",
+    "pages": 16,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-2-unit-4-obj-4a-workplace-operations",
+    "title": "BLK-2-Unit-4-Obj-4a-Workplace-Operations",
+    "objective": "4A",
+    "source": "BLK-2-Unit-4-Obj-4a-Workplace-Operations.pdf",
+    "path": "references/blk-2-unit-4-obj-4a-workplace-operations.md",
+    "pages": 12,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-2-unit-5-obj-5a-mission-preparation",
+    "title": "BLK-2-Unit-5-Obj-5a-Mission-Preparation",
+    "objective": "5A",
+    "source": "BLK-2-Unit-5-Obj-5a-Mission-Preparation.pdf",
+    "path": "references/blk-2-unit-5-obj-5a-mission-preparation.md",
+    "pages": 8,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-2-unit-5-obj-5b-5-day-forecast",
+    "title": "BLK-2-Unit-5-Obj-5b-5-Day-Forecast",
+    "objective": "5B",
+    "source": "BLK-2-Unit-5-Obj-5b-5-Day-Forecast.pdf",
+    "path": "references/blk-2-unit-5-obj-5b-5-day-forecast.md",
+    "pages": 2,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-2-unit-5-obj-5c-mefs",
+    "title": "BLK-2-Unit-5-Obj-5c-MEFs",
+    "objective": "5C",
+    "source": "BLK-2-Unit-5-Obj-5c-MEFs.pdf",
+    "path": "references/blk-2-unit-5-obj-5c-mefs.md",
+    "pages": 3,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-2-unit-5-obj-5d-tafs",
+    "title": "BLK-2-Unit-5-Obj-5d-TAFs",
+    "objective": "5D",
+    "source": "BLK-2-Unit-5-Obj-5d-TAFs.pdf",
+    "path": "references/blk-2-unit-5-obj-5d-tafs.md",
+    "pages": 10,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-2-unit-5-obj-5e-wwas",
+    "title": "BLK-2-Unit-5-Obj-5e-WWAs",
+    "objective": "5E",
+    "source": "BLK-2-Unit-5-Obj-5e-WWAs.pdf",
+    "path": "references/blk-2-unit-5-obj-5e-wwas.md",
+    "pages": 4,
+    "blankPages": 0
+  },
+  {
+    "id": "blk-2-unit-5-obj-5f-mission-briefs",
+    "title": "BLK-2-Unit-5-Obj-5f-Mission-Briefs",
+    "objective": "5F",
+    "source": "BLK-2-Unit-5-Obj-5f-Mission-Briefs.pdf",
+    "path": "references/blk-2-unit-5-obj-5f-mission-briefs.md",
+    "pages": 12,
+    "blankPages": 0
+  }
+]
