@@ -1,5 +1,5 @@
 $ErrorActionPreference = "Stop"
-$projectRoot = $PSScriptRoot
+$projectRoot = Split-Path -Parent $PSScriptRoot
 $python = Get-ChildItem "$env:LOCALAPPDATA\Programs\Python\Python*\python.exe" -ErrorAction SilentlyContinue |
     Sort-Object FullName -Descending |
     Select-Object -First 1 -ExpandProperty FullName
