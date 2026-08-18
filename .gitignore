@@ -11,6 +11,8 @@ graphify-out/
 *.xlsx
 *.xls
 docs/*
+!docs/AI-References/
+!docs/AI-References/**
 local-agent/course/references/*
 !local-agent/course/reference-manifest.json
 
