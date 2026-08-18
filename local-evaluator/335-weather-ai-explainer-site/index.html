@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>335 TRS Weather AI Guide</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page">
+      <nav class="site-nav" aria-label="Main navigation">
+        <a class="brand" href="index.html">335 TRS <span>Weather AI</span></a>
+        <div class="nav-links">
+          <a href="../index.html">Home</a>
+          <a href="source-pdfs.html">Source PDFs</a>
+          <a href="distiller.html">Distiller</a>
+          <a href="servers.html">Local site</a>
+        </div>
+      </nav>
+
+      <header class="hero home-hero">
+        <p class="eyebrow">A practical local runbook</p>
+        <h1>From source PDFs to useful feedback.</h1>
+        <p class="lede">
+          Three short guides explain where reference files live, how to distill
+          them, and how the local evaluator turns selected objectives and student
+          workbooks into instructor-review feedback.
+        </p>
+      </header>
+
+      <div class="home-content">
+        <section class="panel prerequisites-panel" aria-labelledby="prerequisites-heading">
+          <p class="eyebrow">Before you start</p>
+          <h2 id="prerequisites-heading">Software prerequisites</h2>
+          <ul class="prerequisites-list">
+            <li><strong>Required:</strong> Windows PowerShell and Node.js 18+ on PATH.</li>
+            <li><strong>Required:</strong> LM Studio with Google/Gemma-3-4B loaded on localhost:1234.</li>
+            <li><strong>Required:</strong> Modern browser and local 333 TRS Weather AI project files.</li>
+            <li><strong>Network:</strong> Allow Node.js through the private-network firewall on TCP 5500 and 8787.</li>
+            <li><strong>Optional:</strong> Python 3 with pdfplumber or pypdf to regenerate reference Markdown.</li>
+            <li>No npm packages, database, IIS, Apache, Docker, Java, or .NET runtime is required.</li>
+          </ul>
+        </section>
+
+        <section class="guide-grid" aria-label="Guide sections">
+          <a class="guide-card" href="source-pdfs.html">
+            <span class="card-number">01</span>
+            <h2>Source PDFs</h2>
+            <p>File location, objective naming, and what to do when a source supports more than one objective.</p>
+            <span class="card-link">Prepare the references →</span>
+          </a>
+          <a class="guide-card" href="distiller.html">
+            <span class="card-number">02</span>
+            <h2>Run the Distiller</h2>
+            <p>Use the one-click CMD launcher, understand the generated Markdown, and verify the manifest.</p>
+            <span class="card-link">Distill and verify →</span>
+          </a>
+          <a class="guide-card" href="servers.html">
+            <span class="card-number">03</span>
+            <h2>Run the Local Site</h2>
+            <p>Start LM Studio and both local servers, then follow the feedback path from workbook to result.</p>
+            <span class="card-link">Start the evaluator →</span>
+          </a>
+        </section>
+
+        <section class="panel flow-panel">
+          <p class="eyebrow">The operating loop</p>
+          <div class="flow-line">
+            <span>Source PDFs</span><b>→</b><span>Distilled references</span><b>→</b><span>Selected objectives</span><b>→</b><span>Feedback</span>
+          </div>
+        </section>
+      </div>
+
+      <footer class="site-footer">Local-first documentation for the 335 TRS Weather AI evaluator.</footer>
+    </main>
+  </body>
+</html>
